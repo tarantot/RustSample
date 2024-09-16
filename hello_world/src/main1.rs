@@ -1,4 +1,4 @@
-// CORE DATATYPES //
+// CORE DATATYPES, LIFETIME, AND MEMORY //
 
 #[allow(dead_code)]
 #[allow(unused_imports)]
@@ -12,6 +12,77 @@ use std::mem; // standart package for memory data
 //     println!("test");
 //     let x = 0;
 // }
+
+fn main()
+{
+    // boolean variable
+    let g: bool = !false; // true
+    println!("{}, size = {} bytes", g, mem::size_of_val(&g))
+}
+
+
+// OWNERSHIP
+// fn main()
+// { 
+//    let u = 1; // i32 datatype
+//    let u2 = u;    
+//    println!("u = {}", u); // success
+
+//    let v = vec![1, 2, 3];
+//    let v2 = v;
+    
+//    println!("{:?}", v); /* fail because 
+//    once the variable reassigned it becomes unusable */
+
+//    let foo - |v:Vec<i32>| ();
+//    foo(v);
+
+//    let u = Box::new(1); // i32
+//    let u2 = u;
+
+//    println("u = {}", *u); /* fail because 
+//    using hte moved value */
+
+//    /* retake ownership and return the value back */
+//    let print_vector = |x:Vec<i32>| -> Vec<i32> {
+//        println!("{:?}", x);
+//        x
+//    };
+// }
+
+
+// BORROWING
+fn main ()
+{
+    let print_vector = |x:&Vec<i32>| {
+        println!("x[0] = {}", x[0]);
+    };
+
+    let v = vec![3, 2, 1];
+    print_vector(&v);
+    println!("v[0] = {}", v[0]); // access vector after borrowing
+
+    let mut a = 40;
+    let b = &mut a;
+    *b += 2; /* borrowing the value of 'a'
+    the * allows to acces what is referred to */
+
+    println!("a = {}", a); // error because 'a' is not released
+
+    let mut a1 = 40;
+    {
+        let b1 = &mut a1;
+    *b += 2;
+    } 
+
+    println!("a = {}", a); // correct because b1 borrows only within {}
+
+    let mut z = vec![3, 2, 1];
+    for i in &z {
+        println!("i = {}", i);
+        z.push(5); // error
+    }
+}
 
 
 // fn main()
@@ -58,9 +129,32 @@ use std::mem; // standart package for memory data
 //     println!("{}, size = {} bytes", e1, mem::size_of_val(&e1));
 // }
 
-fn main()
-{
-    // boolean variable
-    let g: bool = !false; // true
-    println!("{}, size = {} bytes", g, mem::size_of_val(&g))
+
+// LIFETIME
+struct Person {
+    name: String
+}
+
+impl Person {
+    fn get_ref_name<'a> (&'aself) -> &'a String {
+        &self.name
+    }
+}
+
+struct Company<'z> { // specifying the lifetyme
+    name: String,
+    ceo: &'z Person // the same lifetime as for Company
+}
+
+fn main () {
+    /* &'static  definition of how long the vatiable will live */
+
+    // let boss = Person{name: String::from("Elon Musk")};
+    // let tesla = Company{name:String::from("Tesla"), ceo: &boss};
+
+    let mut z: &String; {
+        let p = Person{name: String::from("John")}; /* the variabe
+        does not live long enough because of lifetime elision */
+        z = p.get_ref_name();
+    }
 }

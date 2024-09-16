@@ -2,6 +2,7 @@
 name = "hello_world"
 version = "0.1.0"
 edition = "2021"
+authors = ["Taras R"]
 
 [dependencies]
 rand = "0.8"
