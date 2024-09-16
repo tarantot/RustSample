@@ -1,0 +1,1 @@
+/Users/roski1/RustSample/scope_and_shadowing_constraints/target/debug/scope_and_shadowing_constraints: /Users/roski1/RustSample/scope_and_shadowing_constraints/src/main.rs
